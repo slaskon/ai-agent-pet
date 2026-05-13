@@ -1,7 +1,7 @@
 User prompt history:
 
-1. create a new repo test and publish it to git as a public repo
-2. yse existing git user slaskon
+1. create a new repo ai-agent-pet it to git as a public repo
+2. use existing git user slaskon
 3. publish it
 4. update README file in this repo add information that that's my personal pet project to using AI agents for code generation
 5. push changes to github
@@ -10,13 +10,15 @@ User prompt history:
 8. show me result
 9. show me resulted webpage in a brawser
 10. generate a command which I should use to see this page in my browser
-11. I' like run webserver with tha tpage in the docker container and connect to this container to see this page
-12. commit xganges and push them to git
+11. I' like run webserver with that age in the docker container and connect to this container to see this page
+12. commit changes and push them to git
 13. update webpage with a real position of planet diring 1 month back and force from the current date add 2 arros (left anf right) at the top of the page to change the date sow date betwee arros
 14. date is not shown, as well as planets
 15. how can i see
 16. 1
 17. update docker withg the new page
-18. the webpage shows 2 venus the planets do not moving use open resorces to pull planet's position instyed of calculation that
+18. the webpage shows 2 venus the planets do not moving use open resorces to pull planet's position instead of calculation that
 19. all planets are moving with the same radian speed
 20. could you save a history of my prompt to dedicated file?
+sfdsdf
+sfdsdf
