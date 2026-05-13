@@ -9,24 +9,36 @@
 <body>
   <header>
     <h1>Solar System Schema</h1>
-    <p>A simple visual layout of the solar system showing the Sun and inner planets.</p>
+    <p>Real planetary positions showing the Sun and inner planets.</p>
   </header>
 
   <main>
+    <section class="date-navigation">
+      <button id="prevBtn" class="nav-button" aria-label="Previous day">←</button>
+      <div class="date-display">
+        <span id="dateLabel"></span>
+      </div>
+      <button id="nextBtn" class="nav-button" aria-label="Next day">→</button>
+    </section>
+
     <section class="solar-system">
-      <div class="orbit orbit-mercury">
-        <div class="planet mercury" title="Mercury"></div>
-      </div>
-      <div class="orbit orbit-venus">
-        <div class="planet venus" title="Venus"></div>
-      </div>
-      <div class="orbit orbit-earth">
-        <div class="planet earth" title="Earth"></div>
-      </div>
-      <div class="orbit orbit-mars">
-        <div class="planet mars" title="Mars"></div>
-      </div>
       <div class="sun" title="Sun"></div>
+      <div class="planet-container">
+        <div class="orbit orbit-mercury"></div>
+        <div class="planet mercury" id="mercury" title="Mercury"></div>
+      </div>
+      <div class="planet-container">
+        <div class="orbit orbit-venus"></div>
+        <div class="planet venus" id="venus" title="Venus"></div>
+      </div>
+      <div class="planet-container">
+        <div class="orbit orbit-earth"></div>
+        <div class="planet earth" id="earth" title="Earth"></div>
+      </div>
+      <div class="planet-container">
+        <div class="orbit orbit-mars"></div>
+        <div class="planet mars" id="mars" title="Mars"></div>
+      </div>
     </section>
 
     <section class="legend">
@@ -40,5 +52,7 @@
       </ul>
     </section>
   </main>
+
+  <script src="solar-system.js"></script>
 </body>
 </html>
