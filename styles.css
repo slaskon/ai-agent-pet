@@ -1,0 +1,138 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, #090b16, #06070f 55%, #070a13 100%);
+  color: #f8fafc;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+header h1 {
+  font-size: clamp(2rem, 3vw, 3rem);
+  letter-spacing: 0.03em;
+}
+
+header p {
+  margin-top: 0.75rem;
+  max-width: 42rem;
+  color: #cbd5e1;
+}
+
+main {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+}
+
+.solar-system {
+  position: relative;
+  width: min(90vw, 600px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 60%, transparent 100%);
+  box-shadow: inset 0 0 60px rgba(255,255,255,0.05), 0 0 60px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.orbit {
+  position: absolute;
+  inset: 50%;
+  border: 1px dashed rgba(226,232,240,0.17);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.orbit-mercury { width: 18%; height: 18%; }
+.orbit-venus { width: 30%; height: 30%; }
+.orbit-earth { width: 45%; height: 45%; }
+.orbit-mars { width: 60%; height: 60%; }
+
+.planet {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(255,255,255,0.12);
+}
+
+.mercury { width: 14px; height: 14px; background: #cbd5e1; }
+.venus { width: 18px; height: 18px; background: #f6e05e; }
+.earth { width: 20px; height: 20px; background: #60a5fa; }
+.mars { width: 16px; height: 16px; background: #f97316; }
+
+.sun {
+  position: absolute;
+  inset: 50%;
+  width: 90px;
+  height: 90px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at center, #facc15, #f59e0b 65%, #be123c 100%);
+  box-shadow: 0 0 60px rgba(250, 204, 21, 0.5);
+}
+
+.legend {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 18px;
+  padding: 1.5rem;
+}
+
+.legend h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.legend ul {
+  display: grid;
+  gap: 0.75rem;
+  list-style: none;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #e2e8f0;
+}
+
+.marker {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(255,255,255,0.16);
+}
+
+.marker.sun { background: #facc15; }
+.marker.mercury { background: #cbd5e1; }
+.marker.venus { background: #f6e05e; }
+.marker.earth { background: #60a5fa; }
+.marker.mars { background: #f97316; }
+
+@media (max-width: 640px) {
+  body {
+    padding: 1.25rem;
+  }
+
+  .legend {
+    padding: 1rem;
+  }
+}

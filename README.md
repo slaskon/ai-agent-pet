@@ -15,3 +15,4 @@ The goal is to experiment with intelligent automation, code generation workflows
 - Initial repository created and connected to GitHub
 - README updated with project purpose
 - Changes committed and pushed to the remote repository
+- Added a simple solar system webpage schema at `index.html`
