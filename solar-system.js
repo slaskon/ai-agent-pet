@@ -16,22 +16,27 @@ async function getPlanetPositions(date) {
     const jd = getJulianDate(date);
     const T = (jd - 2451545.0) / 36525.0; // Centuries since J2000
     
-    // Simplified VSOP87 elements for inner planets
+    // Simplified VSOP87 elements for inner planets with orbital periods
     const elements = {
-      mercury: { a: 0.38709927, L: 252.25084, w: 77.45645, e: 0.20563593 },
-      venus: { a: 0.72333566, L: 181.97973, w: 131.60246, e: 0.00677672 },
-      earth: { a: 1.00000261, L: 100.46645, w: 102.93005, e: 0.01671123 },
-      mars: { a: 1.52371034, L: 355.45332, w: 286.27161, e: 0.09336511 }
+      mercury: { a: 0.38709927, L: 252.25084, w: 77.45645, e: 0.20563593, period: 87.969, meanMotion: 4.0923 },
+      venus: { a: 0.72333566, L: 181.97973, w: 131.60246, e: 0.00677672, period: 224.701, meanMotion: 1.6021 },
+      earth: { a: 1.00000261, L: 100.46645, w: 102.93005, e: 0.01671123, period: 365.256, meanMotion: 0.9856 },
+      mars: { a: 1.52371034, L: 355.45332, w: 286.27161, e: 0.09336511, period: 686.971, meanMotion: 0.5240 }
     };
     
     const positions = {};
     
     Object.entries(elements).forEach(([key, elem]) => {
-      // Mean longitude
-      const L = elem.L + (36000.77 * T);
+      // Mean longitude - use proper mean motion for each planet
+      // Days since J2000 epoch
+      const daysSinceJ2000 = getJulianDate(new Date(2000, 0, 1, 12, 0, 0)) - jd;
+      const daysElapsed = Math.abs(daysSinceJ2000);
+      
+      // Mean longitude at current date
+      const L = (elem.L + elem.meanMotion * daysElapsed) % 360;
       
       // Mean anomaly (simplified)
-      const M = L - elem.w;
+      const M = (L - elem.w) % 360;
       const M_rad = M * Math.PI / 180;
       
       // Solve Kepler's equation (simplified iteration)
