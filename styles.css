@@ -87,11 +87,11 @@ main {
 .solar-system {
   position: relative;
   width: min(90vw, 600px);
-  aspect-ratio: 1 / 1;
+  height: min(90vw, 600px);
   border-radius: 50%;
   background: radial-gradient(circle at center, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 60%, transparent 100%);
   box-shadow: inset 0 0 60px rgba(255,255,255,0.05), 0 0 60px rgba(0,0,0,0.2);
-  overflow: hidden;
+  overflow: visible;
   margin: 0 auto;
 }
 
@@ -103,23 +103,18 @@ main {
   transform: translate(-50%, -50%);
 }
 
-.orbit-mercury { width: 18%; height: 18%; }
-.orbit-venus { width: 30%; height: 30%; }
-.orbit-earth { width: 45%; height: 45%; }
-.orbit-mars { width: 60%; height: 60%; }
-
-.planet-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  inset: 0;
-}
+.orbit-mercury { width: 25%; height: 25%; }
+.orbit-venus { width: 40%; height: 40%; }
+.orbit-earth { width: 60%; height: 60%; }
+.orbit-mars { width: 80%; height: 80%; }
 
 .planet {
   position: absolute;
-  transform: translate(-50%, -50%);
   border-radius: 50%;
   box-shadow: 0 0 12px rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mercury { width: 14px; height: 14px; background: #cbd5e1; }
@@ -137,6 +132,7 @@ main {
   background: radial-gradient(circle at center, #facc15, #f59e0b 65%, #be123c 100%);
   box-shadow: 0 0 60px rgba(250, 204, 21, 0.5);
   animation: sunGlow 3s ease-in-out infinite;
+  z-index: 10;
 }
 
 @keyframes sunGlow {

@@ -1,14 +1,69 @@
-// Orbital elements for planets (J2000 epoch)
+// Planet orbital data and colors
 const planets = {
-  mercury: { name: 'Mercury', a: 0.387, e: 0.206, i: 7.0, L: 77.5, w: 29.1, W: 48.3, period: 87.97 },
-  venus: { name: 'Venus', a: 0.723, e: 0.007, i: 3.4, L: 131.6, w: 54.9, W: 76.7, period: 224.70 },
-  earth: { name: 'Earth', a: 1.000, e: 0.017, i: 0.0, L: 100.5, w: 102.9, W: 0.0, period: 365.26 },
-  mars: { name: 'Mars', a: 1.524, e: 0.093, i: 1.9, L: 355.4, w: 286.5, W: 49.6, period: 686.98 }
+  mercury: { name: 'Mercury', color: '#cbd5e1', size: 14 },
+  venus: { name: 'Venus', color: '#f6e05e', size: 18 },
+  earth: { name: 'Earth', color: '#60a5fa', size: 20 },
+  mars: { name: 'Mars', color: '#f97316', size: 16 }
 };
 
 let currentDate = new Date(2026, 4, 13); // May 13, 2026
+let planetPositions = {};
 
-// Calculate Julian Date from Date object
+// Get planet positions from Open-Astronomy or calculate simplified positions
+async function getPlanetPositions(date) {
+  try {
+    // Using a simple astronomical calculation based on known orbital elements
+    const jd = getJulianDate(date);
+    const T = (jd - 2451545.0) / 36525.0; // Centuries since J2000
+    
+    // Simplified VSOP87 elements for inner planets
+    const elements = {
+      mercury: { a: 0.38709927, L: 252.25084, w: 77.45645, e: 0.20563593 },
+      venus: { a: 0.72333566, L: 181.97973, w: 131.60246, e: 0.00677672 },
+      earth: { a: 1.00000261, L: 100.46645, w: 102.93005, e: 0.01671123 },
+      mars: { a: 1.52371034, L: 355.45332, w: 286.27161, e: 0.09336511 }
+    };
+    
+    const positions = {};
+    
+    Object.entries(elements).forEach(([key, elem]) => {
+      // Mean longitude
+      const L = elem.L + (36000.77 * T);
+      
+      // Mean anomaly (simplified)
+      const M = L - elem.w;
+      const M_rad = M * Math.PI / 180;
+      
+      // Solve Kepler's equation (simplified iteration)
+      let E = M_rad;
+      for (let i = 0; i < 5; i++) {
+        E = M_rad + elem.e * Math.sin(E);
+      }
+      
+      // True anomaly
+      const nu = 2 * Math.atan2(
+        Math.sqrt(1 + elem.e) * Math.sin(E / 2),
+        Math.sqrt(1 - elem.e) * Math.cos(E / 2)
+      );
+      
+      // Distance
+      const r = elem.a * (1 - elem.e * elem.e) / (1 + elem.e * Math.cos(nu));
+      
+      // Heliocentric coordinates
+      const x = r * Math.cos(nu);
+      const y = r * Math.sin(nu);
+      
+      positions[key] = { x, y, r, angle: nu * 180 / Math.PI };
+    });
+    
+    return positions;
+  } catch (e) {
+    console.error('Error calculating positions:', e);
+    return {};
+  }
+}
+
+// Calculate Julian Date
 function getJulianDate(date) {
   const year = date.getUTCFullYear();
   const month = date.getUTCMonth() + 1;
@@ -18,77 +73,37 @@ function getJulianDate(date) {
   let y = year + 4800 - a;
   let m = month + 12 * a - 3;
   
-  let jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+  let jdn = day + Math.floor((153 * m + 2) / 5) + 365 * y + 
+            Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
   return jdn + 0.5;
 }
 
-// Calculate T (centuries since J2000)
-function getT(jd) {
-  return (jd - 2451545.0) / 36525.0;
-}
-
-// Calculate mean anomaly for a planet
-function getMeanAnomaly(planet, T) {
-  const n = 360 / planet.period;
-  const M = planet.L - planet.w + n * T * 36525;
-  return normalizeAngle(M);
-}
-
-// Calculate eccentric anomaly using Newton's method
-function getEccentricAnomaly(M, e) {
-  M = M * Math.PI / 180;
-  let E = M;
-  for (let i = 0; i < 10; i++) {
-    E = M + e * Math.sin(E);
-  }
-  return E;
-}
-
-// Calculate true anomaly
-function getTrueAnomaly(E, e) {
-  const v = 2 * Math.atan2(
-    Math.sqrt(1 + e) * Math.sin(E / 2),
-    Math.sqrt(1 - e) * Math.cos(E / 2)
-  );
-  return v * 180 / Math.PI;
-}
-
-// Normalize angle to 0-360
-function normalizeAngle(angle) {
-  return ((angle % 360) + 360) % 360;
-}
-
-// Calculate heliocentric ecliptic coordinates
-function getHeliocentricCoords(planet, T) {
-  const M = getMeanAnomaly(planet, T);
-  const E = getEccentricAnomaly(M * Math.PI / 180, planet.e);
-  const v = getTrueAnomaly(E, planet.e);
-  
-  const r = planet.a * (1 - planet.e * Math.cos(E));
-  const x = r * Math.cos((planet.w + v) * Math.PI / 180);
-  const y = r * Math.sin((planet.w + v) * Math.PI / 180);
-  
-  return { x, y, r };
-}
-
 // Update planet positions on screen
-function updatePlanetPositions() {
-  const jd = getJulianDate(currentDate);
-  const T = getT(jd);
+async function updatePlanetPositions() {
+  planetPositions = await getPlanetPositions(currentDate);
   
   const solarSystem = document.querySelector('.solar-system');
+  if (!solarSystem) return;
+  
   const size = Math.min(window.innerWidth * 0.9, 600);
-  const scale = (size / 2) / 1.8; // Scale to fit in container
+  const centerX = size / 2;
+  const centerY = size / 2;
+  const scale = (size / 2) * 0.8; // Leave some margin
   
   Object.entries(planets).forEach(([key, planet]) => {
-    const coords = getHeliocentricCoords(planet, T);
-    const screenX = coords.x * scale;
-    const screenY = coords.y * scale;
+    const pos = planetPositions[key];
+    if (!pos) return;
+    
+    // Convert heliocentric coordinates to screen coordinates
+    const screenX = centerX + (pos.x * scale);
+    const screenY = centerY + (pos.y * scale);
     
     const element = document.getElementById(key);
     if (element) {
-      element.style.left = (50 + (screenX / (size / 2)) * 50) + '%';
-      element.style.top = (50 + (screenY / (size / 2)) * 50) + '%';
+      element.style.left = screenX + 'px';
+      element.style.top = screenY + 'px';
+      element.style.position = 'absolute';
+      element.style.transform = 'translate(-50%, -50%)';
     }
   });
 }
