@@ -26,14 +26,12 @@ async function getPlanetPositions(date) {
     
     const positions = {};
     
+    // Calculate days since J2000 epoch (outside loop for efficiency)
+    const daysSinceJ2000 = jd - 2451545.0;
+    
     Object.entries(elements).forEach(([key, elem]) => {
-      // Mean longitude - use proper mean motion for each planet
-      // Days since J2000 epoch
-      const daysSinceJ2000 = getJulianDate(new Date(2000, 0, 1, 12, 0, 0)) - jd;
-      const daysElapsed = Math.abs(daysSinceJ2000);
-      
-      // Mean longitude at current date
-      const L = (elem.L + elem.meanMotion * daysElapsed) % 360;
+      // Mean longitude at current date using proper mean motion
+      const L = (elem.L + elem.meanMotion * daysSinceJ2000) % 360;
       
       // Mean anomaly (simplified)
       const M = (L - elem.w) % 360;
