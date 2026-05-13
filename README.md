@@ -16,3 +16,20 @@ The goal is to experiment with intelligent automation, code generation workflows
 - README updated with project purpose
 - Changes committed and pushed to the remote repository
 - Added a simple solar system webpage schema at `index.html`
+- Added Docker support to host the webpage with an Nginx webserver
+
+## Docker
+
+Build the container image:
+
+```bash
+docker build -t ai-agent-pet-web .
+```
+
+Run the container:
+
+```bash
+docker run --rm -p 8080:80 ai-agent-pet-web
+```
+
+Then open `http://localhost:8080` to view the solar system webpage.
